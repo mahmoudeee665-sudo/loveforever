@@ -265,104 +265,159 @@ body::before {
 }
 /* ================= MEMORY CARD (ORIGINAL STYLE) ================= */
 
-.memory-card {
-  position: relative;
-  width: 100%;
-  max-width: 480px;
-  margin: auto;
-  border-radius: 32px;
-  overflow: hidden;
-  background: transparent;
-}
+/* ================= MEMORY CARDS (NEW - INFO BELOW IMAGE) ================= */
+/* ده Override على تصميم الـ overlay القديم */
 
-/* Image */
-.memory-card img {
-  width: 100%;
-  height: auto;      /* 👈 ده السر */
-  display: block;
-  border-radius: 32px;
-}
-
-/* Glass card attached to image */
-.memory-info {
-  position: absolute;
-  bottom: 14px;
-  left: 14px;
-  right: 14px;
-
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(26px);
-  -webkit-backdrop-filter: blur(26px);
-
-  border-radius: 22px;
-  padding: 14px 16px 16px;
-
-  box-shadow: 0 18px 40px rgba(0,0,0,0.25);
-}
-
-/* Date */
-.memory-info .date {
-  font-family: 'Cormorant Garamond', serif;
-  color: #e64b7c;
-  font-size: 25px;
-  opacity: 0.9;
-  font-weight: 1000;
-}
-
-
-/* Title */
-.memory-info h3 {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  line-height: 1.3;
-}
-
-/* Description */
-.memory-info p {
-  font-size: 17px;
-  line-height: 1.5;
-  opacity: 0.9;
-}
-
-/* ================= GRID ================= */date
-.memories {
-  max-width: 1100px;
-  margin: auto;
-  padding: 0 16px 70px;
+.memories{
+  padding: 24px 16px 60px;        /* نفس ال spacing الحلو للموبايل */
   display: grid;
   gap: 28px;
 }
 
-/* Desktop */
-@media (min-width: 768px) {
-  .memories {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 36px;
+/* الكارت بقى Container بسيط */
+.memory-card{
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
+  border-radius: 28px;
+  overflow: visible;              /* عشان الكارت الزجاجي تحت يبان كويس */
+  background: transparent;
+  backdrop-filter: none;
+}
+
+/* الصورة ما تتقصش (No crop) */
+.memory-card img,
+.video-card video{
+  width: 100%;
+  height: auto;                   /* مهم جداً: يمنع القص */
+  display: block;
+  border-radius: 28px;
+  object-fit: contain;            /* لو الصورة غريبة النسبة، ما تتقصش */
+  background: rgba(255,255,255,0.06);
+}
+
+/* امنع الـ overlay القديم من الظهور نهائياً */
+.memory-card .overlay{
+  display: none !important;
+}
+
+/* الـ info بقى تحت الصورة */
+.memory-info{
+  position: static !important;    /* يلغي absolute */
+  margin-top: 12px;
+  padding: 16px 18px;
+  border-radius: 22px;
+
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  border: 1px solid rgba(255,255,255,0.20);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+}
+
+/* date font زي ما انت طالب */
+.memory-info .date{
+  font-family: 'Cormorant Garamond', serif;
+  color: #e64b7c;
+  font-size: 18px;
+  opacity: 0.95;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* title & desc */
+.memory-info h3{
+  font-size: 20px;
+  line-height: 1.35;
+  margin: 0 0 8px;
+  font-weight: 800;
+}
+
+.memory-info p{
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0;
+  opacity: 0.92;
+}
+
+/* ================= VIDEO CARD ================= */
+.video-card{
+  position: relative;
+}
+
+/* خلي الفيديو زي الصورة (فوق) */
+.video-card video{
+  border-radius: 28px;
+}
+
+/* زرار تشغيل الفيديو فوق الفيديو فقط */
+.video-play-btn{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 5;
+
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.30),
+    inset 0 0 12px rgba(255,255,255,0.20);
+
+  transition: transform .2s ease, background .2s ease;
+}
+
+.video-play-btn i{
+  color: #e64b7c;
+  font-size: 20px;
+  margin-left: 2px;
+}
+
+.video-play-btn:active{
+  transform: translate(-50%, -55%) scale(0.92);
+}
+
+.video-card.playing .video-play-btn{
+  opacity: 0;
+  pointer-events: none;
+}
+.lock-card input {
+  font-size: 16px; /* iOS zoom fix */
+}
+
+/* ================= MOBILE TWEAKS ================= */
+@media (max-width: 767px){
+  .memory-card{
+    max-width: 92%;
+    border-radius: 26px;
   }
-}
-.memory-info {
-  border: 1px solid rgba(255,255,255,0.2);
-}
-@media (max-width: 767px) {
-  .memory-card {
-    border-radius: 45px;
+
+  .memory-card img,
+  .video-card video{
+    border-radius: 26px;
+  }
+
+  .memory-info{
+    border-radius: 20px;
+    padding: 14px 16px;
   }
 }
 
-
-@media (max-width: 767px) {
-
-  .memory-card {
-    max-width: 80% !important;     /* تصغير الكارت */
-  }
-
-  .memory-info {
-    left: 12px;
-    right: 12px;
-    bottom: 20px;
-  }
-}
 /* ================= FLOATING MUSIC BUTTON ================= */
 .music-btn {
   position: fixed;
@@ -470,3 +525,9 @@ body::before {
   color: rgba(255,255,255,0.6);
 }
 /* ================= MODIFICATIONS BASED ON REQUESTS ================= */
+
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}
