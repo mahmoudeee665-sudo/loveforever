@@ -382,11 +382,6 @@ body::before {
   transition: transform .2s ease, background .2s ease;
 }
 
-.video-play-btn i{
-  color: #e64b7c;
-  font-size: 20px;
-  margin-left: 2px;
-}
 
 .video-play-btn:active{
   transform: translate(-50%, -55%) scale(0.92);
@@ -478,34 +473,8 @@ body::before {
   background: #000;
 }
 
-/* Play Button */
-.video-play-btn {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  border: none;
 
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-  transition: transform .25s ease, background .25s ease;
-  z-index: 3;
-}
-
-.video-play-btn i {
-  color: #e64b7c;
-  font-size: 22px;
-  margin-left: 3px;
-}
 
 .video-play-btn:hover {
   transform: scale(1.08);
@@ -530,4 +499,51 @@ input,
 textarea,
 select {
   font-size: 16px !important;
+}
+
+
+/* ================= VIDEO PLAY BUTTON - FIXED CENTER ================= */
+
+.video-card {
+  position: relative;
+}
+
+.video-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(255,255,255,0.28);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 10;
+
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.35),
+    inset 0 0 12px rgba(255,255,255,0.25);
+}
+
+.video-play-btn i {
+  color: #e64b7c;
+  font-size: 22px;
+  margin-left: 2px; /* ضبط سهم التشغيل */
+}
+
+/* اختفاء الزر أثناء التشغيل */
+.video-card.playing .video-play-btn {
+  opacity: 0;
+  pointer-events: none;
 }
