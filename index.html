@@ -2,57 +2,160 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-/>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  />
+  <title>Two Souls</title>
 
-  <title>Our Chapter</title>
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 
-  <!-- Font Awesome -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  />
-
+  
   <link rel="stylesheet" href="style.css">
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+
 </head>
 
-<body>
-
 <!-- 🎵 Background Music -->
-<audio id="bgMusic" preload="auto" loop>
+<audio id="bgMusic" preload="auto">
   <source src="music/song.mp3" type="audio/mpeg">
 </audio>
 
 <!-- 🎵 Floating Music Button -->
-<button id="musicToggle" class="music-btn hidden">
-  <i class="fa-solid fa-pause"></i>
+<button id="musicToggle" class="music-btn hidden" aria-label="music toggle">
+  <i style="color: #e64b7c;" class="fa-solid fa-pause"></i>
 </button>
+<!-- 🔐 Dashboard Button -->
+<a href="admin.html" class="dashboard-btn" aria-label="Dashboard">
+  <i class="fa-solid fa-lock"></i>
+</a>
 
-<!-- 🔐 LOCK SCREEN -->
+
+<div class="hearts-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://lvdvwrhqscuhuesruexj.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_XOrLNheHOJZrdTfrs6c8Lw_zc-ETr-m";
+
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+async function loadMemories() {
+
+  const { data, error } = await sb
+    .from("memories")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const container = document.getElementById("newMemoriesContainer");
+
+  data.forEach(item => {
+
+    const card = document.createElement("div");
+    card.className = "memory-card" + (item.type === "video" ? " video-card" : "");
+
+    if (item.type === "video") {
+      const { data: pub } = sb.storage.from("memories").getPublicUrl(item.media_path);
+      const posterUrl = item.poster_path
+        ? sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl
+        : "";
+
+      card.innerHTML = `
+        <video src="${pub.publicUrl}" poster="${posterUrl}" preload="metadata" muted playsinline></video>
+        <button class="video-play-btn" aria-label="play video">
+          <i class="fa-solid fa-play"></i>
+        </button>
+      `;
+    } else {
+      const { data: pub } = sb.storage.from("memories").getPublicUrl(item.media_path);
+      card.innerHTML = `<img src="${pub.publicUrl}" alt="">`;
+    }
+
+    const info = document.createElement("div");
+    info.className = "memory-info";
+    info.innerHTML = `
+      <span class="date">${item.date_text}</span>
+      <h3>${item.title}</h3>
+      <p>${item.caption}</p>
+    `;
+
+    card.appendChild(info);
+    container.appendChild(card);
+  });
+
+  // Video controls
+  document.querySelectorAll(".video-card").forEach(vc => {
+    const v = vc.querySelector("video");
+    const btn = vc.querySelector(".video-play-btn");
+    if (!v || !btn) return;
+
+    btn.addEventListener("click", () => {
+      v.play();
+      vc.classList.add("playing");
+      if (v.requestFullscreen) v.requestFullscreen();
+      else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+    });
+
+    v.addEventListener("pause", () => vc.classList.remove("playing"));
+    v.addEventListener("ended", () => vc.classList.remove("playing"));
+  });
+}
+
+loadMemories();
+</script>
+
+
+
+
+
+<body>
+
+<!-- 🔐 PASSWORD SCREEN -->
 <div id="lockScreen" class="lock-screen">
   <div class="lock-card">
-    <i class="fa-solid fa-lock"></i>
+    <i class="fa-solid fa-lock fa-2xl" style="color: #e64b7c;"></i>
     <h3>محتوى خاص</h3>
     <p>من فضلك أدخل كلمة المرور للمتابعة</p>
-    <input id="passwordInput" type="password" placeholder="كلمة المرور">
-    <button onclick="checkPassword()">دخول</button>
+
+<input
+  type="password"
+  id="passwordInput"
+  placeholder="كلمة المرور"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  maxlength="4"
+  autocomplete="off"
+/>
+
+
+
+    <button type="button" onclick="checkPassword()">دخول</button>
   </div>
 </div>
 
-<!-- 🌍 CONTENT -->
-<main id="content" class="hidden">
+<!-- 🌍 MAIN CONTENT -->
+<div id="content" class="hidden">
 
   <!-- ⏳ TIMELINE -->
   <section class="timeline">
     <div class="timeline-card">
-      <i class="fa-solid fa-heart heart"></i>
+<span class="heart">
+<i class="fa-solid fa-heart fa-2xl" style="color: #e64b7c;"></i></span>
       <h4>OUR ETERNAL TIMELINE</h4>
 
       <div class="time-grid">
@@ -67,25 +170,25 @@
   </section>
 
   <!-- 🖼️ MEMORIES -->
-  <section class="memories">
+<section class="memories" >
 
-    <!-- CARD -->
-    <article class="memory-card">
-      <img src="img/1.jpeg" alt="">
-      <div class="memory-info">
+<div class="memory-card">
+  <img src="img/1.jpeg" alt="">
+
+  <div class="memory-info">
         <span class="date">15-1-2026</span>
         <h3>أول صورة لينا</h3>
-        <p>أول صورة جمعتنا مع بعض، كانت بداية حكاية بسيطة, بس مليانة إحساس وهتفضل مكمله طول العمر .
+        <p>أول صورة جمعتنا مع بعض، كانت بداية حكاية بسيطة, بس مليانة إحساس وهتفضل مكمله طول العمر 
         </p>
-      </div>
-    </article>
+    </div>
+</div>
 
 
+<div class="memory-card">
+  <img src="img/2.jpg" alt="">
 
-    <article class="memory-card">
-      <img src="img/2.jpg" alt="">
-      <div class="memory-info">
-        <span class="date">27-1-2026</span>
+  <div class="memory-info">
+        <span class="date">28-1-2026</span>
         <h3>يوم مميز بالنسبالي</h3>
         <p
 
@@ -97,58 +200,70 @@
 
 
         </p>
-      </div>
-    </article>
-    <article class="memory-card">
-      <img src="img/3.jpg" alt="">
-      <div class="memory-info">
-        <span class="date">28-1-2026</span>
+        </div>
+</div>
+
+<div class="memory-card">
+  <img src="img/3.jpg" alt="">
+
+  <div class="memory-info">
+        <span class="date">27-1-2026</span>
         <h3>أحلى يوم لينا</h3>
         <p>
      اكتر يوم جميل اوي وكل تفاصيله كانت جميله علشان انتي الي بتحلي كل الأوقات اكتر يوم اطمنا فيه لبعض وحسينا ان وجودنا مع بعض راحه
     </p>
-      </div>
-    </article>
-    <!-- VIDEO CARD -->
-    <article class="memory-card video-card">
-      <video
-        id="memoriesVideo"
-        src="video/memories.mp4"
-        poster="img/videobg.jpeg"
-        muted
-        playsinline
-      ></video>
+    </div>
+</div>
 
-      <button class="video-play-btn">
-        <i class="fa-solid fa-play"></i>
-      </button>
 
-      <div class="memory-info">
-        <span class="date"><i class="fa-solid fa-infinity"></i></span>
-        <h3>ذكريات عمري ما هنساها</h3>
+
+<div class="memory-card video-card">
+  <video
+    id="memoriesVideo"
+    src="video/memories.mp4"
+    poster="img/videobg.jpeg"
+    preload="metadata"
+    muted
+    playsinline
+  ></video>
+
+  <!-- Play Button -->
+  <button class="video-play-btn" aria-label="play video">
+    <i class="fa-solid fa-play"></i>
+  </button>
+
+  <div class="memory-info">
+    <span class="date">
+      <i class="fa-solid fa-infinity fa-xl"></i>
+    </span>
+    <h3>ذكريات عمري ما هنساها</h3>
         <p>
           لحظات متجمعة في فيديو،
           كل لقطة فيها ذكرى،
           وكل ذكرى ليها مكانها.
         </p>
-      </div>
-    </article>
+  </div>
+</div>
 
   </section>
 
-  <!-- 💌 FINAL -->
+
+  <section class="memories" id="newMemoriesContainer"></section>
+
+
+  <!-- 💌 FINAL MESSAGE -->
   <section class="final">
     <div class="final-card">
-      <i class="fa-regular fa-star"></i>
+      <span><i class="fa-solid fa-heart fa-2xl" style="color: #e64b7c;"></i></span>
       <p>
         معاك كل حاجة بقت أوضح،
-        ووجودك هو أكتر حاجة مطمنة في حياتي.
+        ووجودك هو أكتر حاجة مطمنة في حياتي
       </p>
       <strong> Khaled & Rewan </strong>
     </div>
   </section>
 
-</main>
+</div>
 
 <script src="script.js"></script>
 </body>
