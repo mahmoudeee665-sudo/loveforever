@@ -425,50 +425,42 @@ body::before {
 }
 
 /* Play Button */
-.video-play-btn {
+.video-wrapper .video-play-btn {
   position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  border: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid #e64b7c;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   cursor: pointer;
-  transition: transform .25s ease, background .25s ease;
-  z-index: 3;
+  transition: all 0.3s ease;
 }
 
-.video-play-btn i {
+/* Icon Color */
+.video-wrapper .video-play-btn i {
   color: #e64b7c;
-  font-size: 22px;
-  margin-left: 3px;
+  font-size: 26px;
 }
 
-.video-play-btn:hover {
-  transform: scale(1.08);
-  background: rgba(255,255,255,0.35);
+/* Hover Effect */
+.video-wrapper .video-play-btn:hover {
+  background: #e64b7c;
+  transform: translate(-50%, -50%) scale(1.1);
 }
 
-/* Hide play button when video playing */
-.video-card.playing .video-play-btn {
-  opacity: 0;
-  pointer-events: none;
-}
-  .video-play-btn::after {
-  content: "♪";
-  position: absolute;
-  bottom: -18px;
-  font-size: 10px;
-  color: rgba(255,255,255,0.6);
+.video-wrapper .video-play-btn:hover i {
+  color: #fff;
 }
 /* ================= MODIFICATIONS BASED ON REQUESTS ================= */
 
@@ -626,4 +618,59 @@ body::before {
     bottom: 28px;
     left: 28px;
   }
+}
+
+
+
+
+
+/* ===== FIX VIDEO BUTTON POSITION ===== */
+
+.video-card {
+  display: block !important;   /* cancel flex from mobile rule */
+  position: relative;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 32px;
+}
+
+.video-wrapper video {
+  width: 100%;
+  display: block;
+  border-radius: inherit;
+}
+
+.video-wrapper .video-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+
+  background: rgba(0,0,0,0.45);
+  border: 2px solid #e64b7c;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-wrapper .video-play-btn i {
+  color: #e64b7c;
+  font-size: 26px;
+}
+
+
+.memory-info p {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }

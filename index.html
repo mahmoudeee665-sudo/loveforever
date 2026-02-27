@@ -75,12 +75,14 @@ async function loadMemories() {
         ? sb.storage.from("memories").getPublicUrl(item.poster_path).data.publicUrl
         : "";
 
-      card.innerHTML = `
-        <video src="${pub.publicUrl}" poster="${posterUrl}" preload="metadata" muted playsinline></video>
-        <button class="video-play-btn" aria-label="play video">
-          <i class="fa-solid fa-play"></i>
-        </button>
-      `;
+card.innerHTML = `
+  <div class="video-wrapper">
+    <video src="${pub.publicUrl}" poster="${posterUrl}" preload="metadata" muted playsinline></video>
+    <button class="video-play-btn" aria-label="play video">
+      <i class="fa-solid fa-play"></i>
+    </button>
+  </div>
+`;
     } else {
       const { data: pub } = sb.storage.from("memories").getPublicUrl(item.media_path);
       card.innerHTML = `<img src="${pub.publicUrl}" alt="">`;
@@ -218,33 +220,35 @@ loadMemories();
 
 
 <div class="memory-card video-card">
-  <video
-    id="memoriesVideo"
-    src="video/memories.mp4"
-    poster="img/videobg.jpeg"
-    preload="metadata"
-    muted
-    playsinline
-  ></video>
 
-  <!-- Play Button -->
-  <button class="video-play-btn" aria-label="play video">
-    <i class="fa-solid fa-play"></i>
-  </button>
+  <div class="video-wrapper">
+    <video
+      id="memoriesVideo"
+      src="video/memories.mp4"
+      poster="img/videobg.jpeg"
+      preload="metadata"
+      muted
+      playsinline
+    ></video>
+
+    <button class="video-play-btn" aria-label="play video">
+      <i class="fa-solid fa-play"></i>
+    </button>
+  </div>
 
   <div class="memory-info">
     <span class="date">
       <i class="fa-solid fa-infinity fa-xl"></i>
     </span>
     <h3>ذكريات عمري ما هنساها</h3>
-        <p>
-          لحظات متجمعة في فيديو،
-          كل لقطة فيها ذكرى،
-          وكل ذكرى ليها مكانها.
-        </p>
+    <p>
+      لحظات متجمعة في فيديو،
+      كل لقطة فيها ذكرى،
+      وكل ذكرى ليها مكانها.
+    </p>
   </div>
-</div>
 
+</div>
   </section>
 
 
